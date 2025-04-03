@@ -1,14 +1,12 @@
-## What idea(s) do you have for your final project?
-
-The main idea that I have for the final project is a text based adventure with a couple of outcomes based on decisions made. I've done something similar in previous projects and understand that the core concept might not be that unique nor a tes of my knowledge, so I want to use tkinter as a GUI to make the selections for the project.
-
-The adventure would feature a selection of rooms/areas that the user would explore using a few general actions to trigger context sensitive events. The MVP for the project would be at least 2 endings (A good and bad ending) with 8 rooms/areas for the user to explore. 
-
-## Do you have any questions of your own?
-
-Is this sufficient for a final project or do I have to increase the scope at all?
-
-
+USE REN PY FOR DEVELOPMENT (LOOK UP A TUTORIAL AND GET THE LOGIC DONE AFTER THE PBL SPRINT4)
+- CHOICES LEAD TO TYPE OF ENDING
+    - IF REN PY ALLOWS HAVE AN ENDING A TURN BASED FIGHT ON A DESTRUCTIVE ENDING USING ITEMS AND ABILITIES FROM CHOICES UP TO THIS POINT
+    - HAVE AN ENDING REVOLVING AROUND DIALOGUE (LIKELY WILL USE LEAST BASED ON CHOICES AND WILL BE A FAILSAFE FOR ENGAGEMENT INCASE BOTH OTHER ENDINGS ARE UNVIABLE/UNDESIRABLE)
+    - HAVE AN ENDING REVOLVING AROUND A PUZZLE UTILIZING OBJECT GOTTEN FROM CHOICES UP TO THAT POINT
+- HAVE SOME SORT OF ART (DOESN'T HAVE TO BE GOOD) USING ISOMETRIC PERSPECTIVE AND SIMPLE LINES
+    - NEEDS THIS BECAUSE PUZZLE WONT COME ACROSS IF THERES NO IMAGE (THINKING OF CREATING A SHAPE BASED ON PROMPTS)
+    - HAVE IDENTIFIABLE MARKERS FOR ROOMS (SYMBOLS OR LANDMARKS)\
+- HAVE 1 TIMED EVENT TO TEST REN PY
 
 # Proposal
 
