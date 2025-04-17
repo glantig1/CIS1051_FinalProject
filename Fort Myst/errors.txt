@@ -2,9 +2,8 @@
 errors listed below, and try again.
 
 
-File "game/script.rpy", line 43: expected statement.
-    for item in inventory:
-             ^
+File "game/script.rpy", line 88: invalid syntax
+    def anvil(forge)
 
 Ren'Py Version: Ren'Py 8.3.7.25031702
-Sun Apr 13 01:44:43 2025
+Thu Apr 17 05:01:09 2025
