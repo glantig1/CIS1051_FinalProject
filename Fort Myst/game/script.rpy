@@ -1,4 +1,4 @@
-﻿default inventory = ["Black Potion", "Sword Hilt", "Pointed Mold", "Mysterious Object", "Poem", "Book"]
+﻿default inventory = [""]
 ## default inventory = []
 default interact_room_items = []
 
@@ -15,9 +15,9 @@ default cellar_items = ["Pointed Mold","Spherical Mold","Cube Mold"]
 default gatehouse_items = []
 default kitchen_items = []
 default armory_items = ["Sword Hilt"]
-default tower_items = ["Poem"]
+default tower_items = []
 default great_hall_items = ["Gate key"]
-default library_items = ["Book","Red Potion","Blue Potion","Yellow Potion"]
+default library_items = ["Red Potion","Blue Potion","Yellow Potion"]
 default throne_room_items = ["Mysterious Object"]
 
 
@@ -177,15 +177,191 @@ label inventory_menu:
     jump room_hub
 
 label investigate:
-    "You investigate [current_room]"
-    $ room_investigate[current_room] = 1
+    if room_investigate[current_room] == 0:
+        $ room_investigate[current_room] = 1
+    if current_room == "gatehouse":
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You see a mechanism with a slotted insert"
+            if "Gate key" in inventory:
+                "Do you insert the Gate Key?"
+                menu:
+                    "Yes":
+                        $ room_state["entrance"] = 2
+                        $ room_investigate[current_room] = 3
+                        "The grinding of gears fills the room as a rumble from outside shakes the room."
+                        jump room_hub
+                    "No":
+                        jump room_hub
+        elif room_investigate[current_room] == 2:
+            "The mechanism remains."
+            if "Gate key" in inventory:
+                "Do you insert the Gate Key?"
+                menu:
+                    "Yes":
+                        $ room_state["entrance"] = 2
+                        $ room_investigate[current_room] = 3 
+                        "The grinding of gears fills the room as a rumble from outside shakes the room."
+                        jump room_hub
+                    "No":
+                        jump room_hub
+        else: 
+            "The mechanism seems broken"
+    elif current_room == "kitchen":
+        "You investigate [current_room]"
+    elif current_room == "armory":
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You find a piece of paper stuck under some planks of wood. Do you read it?"
+            menu:
+                "Yes":
+                    $ room_investigate[current_room] = 2
+                    $ inventory.append(armory_items[0])
+                    "Sword Hilt Added to Inventory"
+                "No": 
+                    jump room_hub
+        elif room_investigate[current_room] == 2:
+            "The Sword Hilt remains. Do you take it?"
+            menu:
+                "Yes":
+                    $ room_investigate[current_room] = 2
+                    $ inventory.append("Sword Hilt")
+                    "Sword Hilt Added to Inventory"
+                "No": 
+                    jump room_hub
+
+        else:
+            "The armory lays bare"
+            jump room_hub
+    elif current_room == "tower":
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You find a piece of paper stuck under some planks of wood. Do you read it?"
+            menu:
+                "Yes":
+                    jump poem
+                "No": 
+                    jump room_hub
+        else:
+            "The poem remains. Do you read it?"
+            menu:
+                "Yes":
+                    jump poem
+                "No": 
+                    jump room_hub
+    elif current_room == "library":
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You find A Variety of Colored Potions"
+            "Red Potion Added to Inventory"
+            $ inventory.append(library_items[0])
+            "Blue Potion Added to Inventory"
+            $ inventory.append(library_items[1])
+            "Yellow Potion Added to Inventory"
+            $ inventory.append(library_items[2])
+            "You also find an inscription on the wall. Do you read it?"
+            menu:
+                "Yes":
+                    jump inscription
+                "No": 
+                    jump room_hub
+        else:
+            "The inscription remains. Do you read it?"
+            menu:
+                "Yes":
+                    jump inscription
+                "No": 
+                    jump room_hub
+    elif current_room == "smithy":
+        "There is a forge, ready and primed at the center of this room"
+    elif current_room == "stables":
+        "You investigate [current_room]"
+    elif current_room == "cellar":
+        "You stand in a damp cellar"
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You find A Variety of metal molds"
+            "Pointed Mold Added to Inventory"
+            $ inventory.append(cellar_items[0])
+            "Spherical Mold Added to Inventory"
+            $ inventory.append(cellar_items[1])
+            "Cube Mold Added to Inventory"
+            $ inventory.append(cellar_items[2])
+            "You also find a book beside them. Do you read it?"
+            menu:
+                "Yes":
+                    $ room_state["cellar"] = 1
+                    jump book
+                "No": 
+                    jump room_hub
+        else:
+            "The book remains. Do you read it?"
+            menu:
+                "Yes":
+                    jump book
+                "No": 
+                    jump room_hub
+    elif current_room == "great_hall":
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You walk great halls lined with rows of rusted suits of knights armor"
+            "In the corner you see the glint of something, suprisingly untarnished"
+            "Its a key!"
+            "Do you take it?"
+            menu:
+                "Yes":
+                    $ room_investigate[current_room] = 3
+                    $ inventory.append(great_hall_items[0])
+                    "Gate Key Added to Inventory"
+                "No": 
+                    "The remains undisturbed"
+            
+        elif room_investigate[current_room] == 2:
+            "The key remains. Do you take it?"
+            menu:
+                "Yes":
+                    $ room_investigate[current_room] = 3
+                    $ inventory.append(great_hall_items[0])
+                    "Gate Key Added to Inventory"
+                "No": 
+                    "The remains undisturbed"
+        else:
+            "The rusted sets armour seem to whistle in chorus, but alas its just the wind"
+    elif current_room == "throne_room":
+        if room_investigate[current_room] == 1:
+            $ room_investigate[current_room] = 2
+            "You stand in a throne room. Banners hang on the walls, tattered and faded."
+            "Set at the back of the room rests a throne. Though it should be empty, abandonded ass the rest of the castle, you spot something strange resting on it"
+            "As you approach you behold writhing mass, glowing in shifting, pearlecent colors"
+            "Do you take it?"
+            menu:
+                "Yes":
+                    $ room_investigate[current_room] = 3
+                    $ inventory.append(throne_room_items[0])
+                    "Mysterious Object Added to Inventory"
+                "No": 
+                    "The Mysterious Object continues to writhe"
+            
+        elif room_investigate[current_room] == 2:
+            "The Mysterious Object remains. Do you take it?"
+            menu:
+                "Yes":
+                    $ room_investigate[current_room] = 3
+                    $ inventory.append(throne_room_items[0])
+                    "Mysterious Object Added to Inventory"
+                "No": 
+                    "The Mysterious Object continues to writhe"
+        else:
+            "The throne lays bare, the rooms hums in silence"
+    else: 
+        "There is nothing to interact with"
     jump room_hub
 
 ## re
 label interact:
     if room_investigate[current_room] == 1:
-        if current_room == "gate_house":
-            jump interact_kitchen 
+        if current_room == "gatehouse":
+            jump interact_gatehouse 
         elif current_room == "kitchen":
             jump interact_kitchen
         elif current_room == "armory":
@@ -218,7 +394,7 @@ label interact_kitchen:
         "The pot has [potionColor(pot)]"
     else:
         "The pot is empty"
-    if "Book" in inventory:
+    if room_investigate["cellar"] == 2:
         menu:
             "Add Red Potion" if "Red Potion" in inventory:
                 $ pot.append("Red Potion")
@@ -270,7 +446,7 @@ label interact_smithy:
     else:
         "The forge is empty"
     
-    if "Poem" in inventory:
+    if room_investigate["cellar"] == 2:
         menu:
             "Add Pointed Mold" if "Pointed Mold" in inventory and "Mysterious Object" in inventory:
                 $ forge.append("Pointed Mold")
@@ -370,7 +546,7 @@ label interact_smithy:
                 jump room_hub
 
 
-label interact_gate_house:
+label interact_gatehouse:
     "You try Cooking with your environment."
     jump room_hub
 
@@ -403,6 +579,12 @@ label passage:
     if room_state["entrance"] == 0:
         "Suddenly the Entrance Slams Shut!"
         $ room_state["entrance"] = 1
+    elif room_state["entrance"] == 2:
+        $ room_state["entrance"] = 3
+        "The Entrance is open!"
+    else: 
+        "Freedom is nigh"
+
     menu:
         "Go to courtyard":
             $ current_room = "courtyard"
@@ -412,7 +594,7 @@ label passage:
                 "The entrance is barred!"
                 jump room_hub
             else:
-                $ current_room = entrace
+                $ current_room = "entrance"
                 jump room_hub
         "Stay Here":
             jump room_hub
@@ -510,6 +692,10 @@ label tower:
         "Stay Here":
             jump room_hub
 
+label poem:
+    "display the poem"
+    jump room_hub
+
 label great_hall:
     menu:
         "Go to Throne Room":
@@ -523,6 +709,18 @@ label great_hall:
             jump room_hub
         "Stay Here":
             jump room_hub
+
+label library:
+    menu:
+        "Go to Great Hall":
+            $ current_room = "great_hall"
+            jump room_hub
+        "Stay Here":
+            jump room_hub
+
+label inscription:
+    "Describe the potion process"
+    jump room_hub
 
 label throne_room:
     menu:
@@ -541,46 +739,3 @@ label end:
 
 
 
-## potential way to do dynamic menus
-## should probably redo inventory and interact scenes to use this
-## kitchen would use this but only accept if its a potion
-## smithy would use this but only accept if its a mold
-
-# label start:
-
-#     $ inventory = ["apple", "key", "map"]
-
-#     "You look in your bag and see:"
-
-#     python:
-#         for item in inventory:
-#             renpy.say(None, "• " + item)
-
-#     "Which item do you want to use?"
-
-#     python:
-#         menu_items = []
-#         for item in inventory:
-#             menu_items.append((f"Use {item}", f"use_{item}"))
-
-#         menu_items.append(("Never mind", "cancel"))
-
-#         menu(menu_items)
-
-#     return
-
-# label use_apple:
-#     "You eat the apple. Crunchy!"
-#     return
-
-# label use_key:
-#     "You try the key on a nearby door."
-#     return
-
-# label use_map:
-#     "You check the map. You're not lost anymore!"
-#     return
-
-# label cancel:
-#     "You decide not to use anything right now."
-#     return

@@ -1,22 +1,22 @@
 ﻿I'm sorry, but an uncaught exception occurred.
 
 While running game code:
-  File "game/script.rpy", line 198, in script
-    jump interact_armory
-ScriptError: could not find label 'interact_armory'.
+  File "game/script.rpy", line 559, in script
+    jump expression current_room
+ScriptError: could not find label 'entrace'.
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
-  File "game/script.rpy", line 198, in script
-    jump interact_armory
+  File "game/script.rpy", line 559, in script
+    jump expression current_room
   File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\ast.py", line 1712, in execute
     rv = renpy.game.script.lookup(target)
   File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\script.py", line 1103, in lookup
     raise ScriptError("could not find label '%s'." % str(original))
-ScriptError: could not find label 'interact_armory'.
+ScriptError: could not find label 'entrace'.
 
 Windows-10-10.0.19045 AMD64
 Ren'Py 8.3.7.25031702
 final 1.0
-Thu Apr 17 05:06:36 2025
+Thu Apr 24 01:25:32 2025

@@ -2,8 +2,9 @@
 errors listed below, and try again.
 
 
-File "game/script.rpy", line 88: invalid syntax
-    def anvil(forge)
+File "game/script.rpy", line 180: reached end of line when expecting ':'.
+    if room_investigate[current_room] == 0
+                                          ^
 
 Ren'Py Version: Ren'Py 8.3.7.25031702
-Thu Apr 17 05:01:09 2025
+Thu Apr 24 01:10:11 2025
