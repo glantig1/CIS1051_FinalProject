@@ -56,7 +56,7 @@ init python:
     # I should have done this for more things
     def formalize_scene_name(current_room):
         formalized_names = {
-            "entrance": "Entrance Hall",
+            "entrance": "Entrance",
             "passage": "Passageway",
             "courtyard": "Courtyard",
             "smithy": "Smithy",
@@ -163,7 +163,11 @@ init python:
 label start:
     scene black
     $ current_room = "entrance"
-    "Welcome to Castle Myst"
+    "In a world of magic and monsters, the job of a ranger takes on a bit of a different meaning."
+    "You've been tasked with investigating the state of Fort Myst since they've gone silent for some months"
+    "As a ranger, you're no stranger to monster ravaged outposts, but this is different"
+    "The castle stands, but aged far past what it should be."
+    "Rounding the perimeter, you find no other entrance than the front gate."
     jump room_hub
 
 # https://www.renpy.org/doc/html/screens.html
@@ -522,7 +526,7 @@ label room_hub:
         zoom 2.0  
         xalign 0.5
         yalign 0.5
-    "You are in [formalize_scene_name(current_room)]."
+    "You are in the [formalize_scene_name(current_room)]."
     if room_state["entrance"] == 0 and current_room == "passage":
         "Suddenly the Entrance Slams Shut!"
         $ room_state["entrance"] = 1
@@ -561,8 +565,8 @@ label passage:
                 "The entrance is barred!"
                 jump room_hub
             else:
-                $ current_room = "end"
-                jump room_hub
+                # $ current_room = "end"
+                jump end
         "Stay Here":
             jump room_hub
 
@@ -663,12 +667,14 @@ label poem:
     jump room_hub
 
 label book:
-    "Skimming through the book, most of it seems to be manuscripts of things you barely understand."
-    "One page stands out, however."
-    "Sloppily scribbled it reads: "
-    "\"With great heat, the substance can be molded into anything! More than that, when treated with mystic energy, they seem to change the material's composition fundamentally!\""
-    "\"I created some molds for testing later, but for now I am called away for more of the Knight King's non-sense.\""
-    "\"Perhaps stowing them away in the cellar will assuage his paranoia, I don't want to end up like the butler.\""
+    "Skimming through the book, most of it seems to be faded, barley visible text."
+    "One page is intact, however."
+    "It reads: " 
+    "\"The Alchemist cleared my smithy for his personal research.\""
+    "\"Apparently the substance needs a furnace's heat to be made into anything useful.\""
+    "\"Don't know why its any different than mmetal, but then again i did hear him cackle about \'his potions changing everything\'.\""
+    "\"I made the molds he asked for, but for now I am called away to fix some armor.\""
+    "\"Ill stow them away in the cellar for now, I don't want get fired because a servant got handsy.\""
     jump room_hub
 
 label great_hall:
@@ -694,7 +700,10 @@ label library:
             jump room_hub
 
 label inscription:
-    "Describe the potion process"
+    "FOLLOW THESE INSTRUCTIONS MY ACOLYTES"
+    "EACH ELEMENT HAS A COLOR AND MIXES TO MAKE MORE COMPLEX ELEMENTS"
+    "EVEN A SCULLERY CAN ENACT MYSTIC POLIMERIZATION"
+    "WITH GREAT HEAT THESE WILL IMBUE THE MOST RESONANT OF MATERIALS WITH ANY PROPERTY"
     jump room_hub
 
 label throne_room:
@@ -707,6 +716,14 @@ label throne_room:
         
 
 label end:
+    scene expression "end" at center:
+        zoom 2.0  
+        xalign 0.5
+        yalign 0.5
+    "You rush out, and are blinded by the difference in light."
+    "Before your eyes adjust, you feel it before you see it"
+    "A Fae Creature stands before you."
+    "What do you do?"
     menu:
         "Fight":
             jump fight
@@ -722,7 +739,7 @@ label fight:
         "You did it!"
         jump fight_win
 
-    "Your Health: [player_health]"
+    "Your Health: [player_health] || The Creature's Health: [enemy_health]"
 
     $ import random
     $ enemy_move = renpy.random.choice(["attack", "parry", "grab"])
@@ -747,11 +764,14 @@ label fight:
     elif (player_move == "attack" and enemy_move == "grab") or (player_move == "parry" and enemy_move == "attack") or (player_move == "grab" and enemy_move == "parry"):
         if "Black Sword" in inventory:
             if player_move == "attack": 
+                "You damage the creature severly"
                 $ enemy_health -= 25
             elif player_move == "parry":
-                $ enemy_health -= 10
+                "You deflect the creature's attack, damaging it with it own strength"
+                $ enemy_health -= 25
             elif player_move == "grab":
-                $ enemy_health -= 10
+                "You take advantage of the creature's hesitance, damaging it"
+                $ enemy_health -= 25
         else:
             "Your attack barely seems to land and are damaged from the recoil"
             $ enemy_health -= 1
