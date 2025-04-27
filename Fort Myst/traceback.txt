@@ -1,22 +1,30 @@
 ﻿I'm sorry, but an uncaught exception occurred.
 
 While running game code:
-  File "game/script.rpy", line 559, in script
-    jump expression current_room
-ScriptError: could not find label 'entrace'.
+  File "game/script.rpy", line 328, in script
+    menu:
+  File "game/script.rpy", line 423, in <module>
+    "Take Back Items" if forge>0:
+TypeError: '>' not supported between instances of 'RevertableList' and 'int'
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
-  File "game/script.rpy", line 559, in script
-    jump expression current_room
-  File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\ast.py", line 1712, in execute
-    rv = renpy.game.script.lookup(target)
-  File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\script.py", line 1103, in lookup
-    raise ScriptError("could not find label '%s'." % str(original))
-ScriptError: could not find label 'entrace'.
+  File "game/script.rpy", line 328, in script
+    menu:
+  File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\ast.py", line 1632, in execute
+    choice = renpy.exports.menu(choices, self.set, args, kwargs, item_arguments)
+  File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\exports\menuexports.py", line 100, in menu
+    condition = renpy.python.py_eval(condition)
+  File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\python.py", line 1218, in py_eval
+    return py_eval_bytecode(code, globals, locals)
+  File "C:\Users\G\Desktop\renpy-8.3.7-sdk\renpy\python.py", line 1211, in py_eval_bytecode
+    return eval(bytecode, globals, locals)
+  File "game/script.rpy", line 423, in <module>
+    "Take Back Items" if forge>0:
+TypeError: '>' not supported between instances of 'RevertableList' and 'int'
 
 Windows-10-10.0.19045 AMD64
 Ren'Py 8.3.7.25031702
 final 1.0
-Thu Apr 24 01:25:32 2025
+Sat Apr 26 03:01:54 2025

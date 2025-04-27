@@ -2,9 +2,9 @@
 errors listed below, and try again.
 
 
-File "game/script.rpy", line 180: reached end of line when expecting ':'.
-    if room_investigate[current_room] == 0
-                                          ^
+File "game/script.rpy", line 88: invalid syntax
+                "end": "End"
+                      ^
 
 Ren'Py Version: Ren'Py 8.3.7.25031702
-Thu Apr 24 01:10:11 2025
+Sun Apr 27 00:56:17 2025

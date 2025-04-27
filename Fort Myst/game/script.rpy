@@ -1,11 +1,7 @@
-﻿default inventory = [""]
-## default inventory = []
+﻿default player_health = 100
+default enemy_health = 100
+default inventory = []
 default interact_room_items = []
-
-
-
-
-
 default entrance_items = []
 default passage_items = []
 default courtyard_items = []
@@ -19,13 +15,8 @@ default tower_items = []
 default great_hall_items = ["Gate key"]
 default library_items = ["Red Potion","Blue Potion","Yellow Potion"]
 default throne_room_items = ["Mysterious Object"]
-
-
-
-
 default pot = []
 default forge = []
-
 default room_state = {
     "entrance": 0,
     "passage": 0,
@@ -41,7 +32,6 @@ default room_state = {
     "throne_room": 0,
     "library": 0
 }
-
 default room_investigate = {
     "entrance": 0,
     "passage": 0,
@@ -57,17 +47,32 @@ default room_investigate = {
     "throne_room": 0,
     "library": 0
 }
-
 default current_room = "entrance"
-
 default investigate_jump = "room_hub"
-default current_investigate = "You investigating room 1."
-
-## have a variable for state change
 default entrance_state = "entrance"
 
 
 init python:
+    # I should have done this for more things
+    def formalize_scene_name(current_room):
+        formalized_names = {
+            "entrance": "Entrance Hall",
+            "passage": "Passageway",
+            "courtyard": "Courtyard",
+            "smithy": "Smithy",
+            "stables": "Stables",
+            "cellar": "Cellar",
+            "gatehouse": "Gatehouse",
+            "kitchen": "Kitchen",
+            "armory": "Armory",
+            "tower": "Tower",
+            "great_hall": "Great Hall",
+            "throne_room": "Throne Room",
+            "library": "Library",
+            "end": "End"
+        }
+        return formalized_names[current_room]
+
     def potionColor(someList):
         if (("Red Potion" in someList and "Blue Potion" in someList and "Yellow Potion" in someList) or("Red Potion" in someList and "Green Potion" in someList) or("Blue Potion" in someList and "Orange Potion" in someList) or("Yellow Potion" in someList and "Purple Potion" in someList) or("Green Potion" in someList and "Purple Potion" in someList) or("Green Potion" in someList and "Red Potion" in someList) or("Orange Potion" in someList and "Blue Potion" in someList)or("Purple Potion" in someList and "Yellow Potion" in someList) or"Black Potion" in someList):
             return "Black"
@@ -152,14 +157,8 @@ init python:
         else: 
             return ""
 
-        
 
 
-## probably going to want a set of functions that define the state of rooms
-
-
-## going to reference https://youtu.be/c_MHMxcIpHI when attempting turn-based fight ending
-## going to try a rock, paper, scissors system with attack, block, grab but the enemy telegraphs their actions
 
 label start:
     scene black
@@ -167,14 +166,17 @@ label start:
     "Welcome to Castle Myst"
     jump room_hub
 
+# https://www.renpy.org/doc/html/screens.html
+# https://www.renpy.org/doc/html/gui.html
 label inventory_menu:
     if inventory:
-        "You have the following items:"
-        $ item_text = "\n".join(inventory)
-        "[item_text]"
+        call screen inventory_screen
+        jump room_hub
     else:
         "Your inventory is empty."
-    jump room_hub
+        jump room_hub
+    return
+
 
 label investigate:
     if room_investigate[current_room] == 0:
@@ -260,7 +262,7 @@ label investigate:
             "You find a piece of paper stuck under some planks of wood. Do you read it?"
             menu:
                 "Yes":
-                    $ room_investigate[current_room] = 2
+                    $ room_investigate[current_room] = 3
                     $ inventory.append(armory_items[0])
                     "Sword Hilt Added to Inventory"
                 "No": 
@@ -269,7 +271,7 @@ label investigate:
             "The Sword Hilt remains. Do you take it?"
             menu:
                 "Yes":
-                    $ room_investigate[current_room] = 2
+                    $ room_investigate[current_room] = 3
                     $ inventory.append("Sword Hilt")
                     "Sword Hilt Added to Inventory"
                 "No": 
@@ -326,95 +328,103 @@ label investigate:
         
         if room_investigate["cellar"] == 2:
             menu:
-                "Add Pointed Mold" if "Pointed Mold" in inventory and "Mysterious Object" in inventory:
+                "Add Pointed Mold" if "Pointed Mold" in inventory and ("Mysterious Object" in inventory or "Mysterious Object" in forge) and len(forge)<2:
                     $ forge.append("Pointed Mold")
                     $ inventory.remove("Pointed Mold")
                     jump investigate
-                "Add Spherical Mold" if "Spherical Mold" in inventory and "Mysterious Object" in inventory:
+                "Add Spherical Mold" if "Spherical Mold" in inventory and ("Mysterious Object" in inventory or "Mysterious Object" in forge) and len(forge)<2:
                     $ forge.append("Spherical Mold")
                     $ inventory.remove("Spherical Mold")
                     jump investigate
-                "Add Cube Mold" if "Cube Mold" in inventory and "Mysterious Object" in inventory:
+                "Add Cube Mold" if "Cube Mold" in inventory and ("Mysterious Object" in inventory or "Mysterious Object" in forge) and len(forge)<2:
                     $ forge.append("Cube Mold")
                     $ inventory.remove("Cube Mold")
                     jump investigate
-                "Add Blade" if "Blade" in inventory:
+                "Add Blade" if "Blade" in inventory and len(forge)<2:
                     $ forge.append("Blade")
                     $ inventory.remove("Blade")
                     jump investigate
-                "Add Jewel" if "Jewel" in inventory:
+                "Add Jewel" if "Jewel" in inventory and len(forge)<2:
                     $ forge.append("Jewel")
                     $ inventory.remove("Jewel")
                     jump investigate
-                "Add Brick" if "Brick" in inventory:
+                "Add Brick" if "Brick" in inventory and len(forge)<2:
                     $ forge.append("Brick")
                     $ inventory.remove("Brick")
                     jump investigate
-                "Add Mysterious Object" if "Mysterious Object" in inventory:
+                "Add Mysterious Object" if "Mysterious Object" in inventory and len(forge)<2:
                     $ forge.append("Mysterious Object")
                     $ inventory.remove("Mysterious Object")
                     jump investigate
-                "Add Red Potion" if "Red Potion" in inventory:
+                "Add Red Potion" if "Red Potion" in inventory and len(forge)<2:
                     $ forge.append("Red Potion")
                     $ inventory.remove("Red Potion")
                     jump investigate
-                "Add Blue Potion" if "Blue Potion" in inventory:
+                "Add Blue Potion" if "Blue Potion" in inventory and len(forge)<2:
                     $ forge.append("Blue Potion")
                     $ inventory.remove("Blue Potion")
                     jump investigate
-                "Add Yellow Potion" if "Yellow Potion" in inventory:
+                "Add Yellow Potion" if "Yellow Potion" in inventory and len(forge)<2:
                     $ forge.append("Yellow Potion")
                     $ inventory.remove("Yellow Potion")
                     jump investigate
-                "Add Green Potion" if "Green Potion" in inventory:
+                "Add Green Potion" if "Green Potion" in inventory and len(forge)<2:
                     $ forge.append("Green Potion")
                     $ inventory.remove("Green Potion")
                     jump investigate
-                "Add Purple Potion" if "Purple Potion" in inventory:
+                "Add Purple Potion" if "Purple Potion" in inventory and len(forge)<2:
                     $ forge.append("Purple Potion")
                     $ inventory.remove("Purple Potion")
                     jump investigate
-                "Add Orange Potion" if "Orange Potion" in inventory:
+                "Add Orange Potion" if "Orange Potion" in inventory and len(forge)<2:
                     $ forge.append("Orange Potion")
                     $ inventory.remove("Orange Potion")
                     jump investigate
-                "Add Black Potion" if "Black Potion" in inventory:
+                "Add Black Potion" if "Black Potion" in inventory and len(forge)<2:
                     $ forge.append("Black Potion")
                     $ inventory.remove("Black Potion")
                     jump investigate
-                "Add Red Blade" if "Red Blade" in inventory:
+                "Add Red Blade" if "Red Blade" in inventory and len(forge)<2:
                     $ forge.append("Red Blade")
                     $ inventory.remove("Red Blade")
                     jump investigate
-                "Add Blue Blade" if "Blue Blade" in inventory:
+                "Add Blue Blade" if "Blue Blade" in inventory and len(forge)<2:
                     $ forge.append("Blue Blade")
                     $ inventory.remove("Blue Blade")
                     jump investigate
-                "Add Yellow Blade" if "Yellow Blade" in inventory:
+                "Add Yellow Blade" if "Yellow Blade" in inventory and len(forge)<2:
                     $ forge.append("Yellow Blade")
                     $ inventory.remove("Yellow Blade")
                     jump investigate
-                "Add Green Blade" if "Green Blade" in inventory:
+                "Add Green Blade" if "Green Blade" in inventory and len(forge)<2:
                     $ forge.append("Green Blade")
                     $ inventory.remove("Green Blade")
                     jump investigate
-                "Add Purple Blade" if "Purple Blade" in inventory:
+                "Add Purple Blade" if "Purple Blade" in inventory and len(forge)<2:
                     $ forge.append("Purple Blade")
                     $ inventory.remove("Purple Blade")
                     jump investigate
-                "Add Orange Blade" if "Orange Blade" in inventory:
+                "Add Orange Blade" if "Orange Blade" in inventory and len(forge)<2:
                     $ forge.append("Orange Blade")
                     $ inventory.remove("Orange Blade")
                     jump investigate
-                "Add Black Blade" if "Black Blade" in inventory:
+                "Add Black Blade" if "Black Blade" in inventory and len(forge)<2:
                     $ forge.append("Black Blade")
                     $ inventory.remove("Black Blade")
                     jump investigate
-                "Create":
+                "Add Sword Hilt" if "Sword Hilt" in inventory and len(forge)<2:
+                    $ forge.append("Sword Hilt")
+                    $ inventory.remove("Sword Hilt")
+                    jump investigate
+                "Create" if len(forge) == 2:
                     if anvil(forge) != "":
-                        "You created placeholder"
+                        "You created [anvil(forge)]"
                         $ inventory.append(anvil(forge))
                         $ forge = []
+                    jump investigate
+                "Take Back Items" if len(forge)>0:
+                    $ inventory.extend(forge)
+                    $ forge = []
                     jump investigate
                 "Leave":
                     jump room_hub
@@ -423,7 +433,7 @@ label investigate:
                 "Leave":
                     jump room_hub
     elif current_room == "stables":
-        "You investigate [current_room]"
+        "You investigate [formalize_scene_name(current_room)]"
     elif current_room == "cellar":
         "You stand in a damp cellar"
         if room_investigate[current_room] == 1:
@@ -452,8 +462,8 @@ label investigate:
     elif current_room == "great_hall":
         if room_investigate[current_room] == 1:
             $ room_investigate[current_room] = 2
-            "You walk great halls lined with rows of rusted suits of knights armor"
-            "In the corner you see the glint of something, suprisingly untarnished"
+            "You walk great halls lined with crumbling arch-ways"
+            "In the corner you see the glint of something (suprisingly) untarnished"
             "Its a key!"
             "Do you take it?"
             menu:
@@ -502,211 +512,28 @@ label investigate:
         else:
             "The throne lays bare, the rooms hums in silence"
     else: 
-        "There is nothing to interact with"
+        "There is nothing here of note."
     jump room_hub
 
-## re
-# label interact:
-#     if room_investigate[current_room] == 1:
-#         if current_room == "gatehouse":
-#             jump interact_gatehouse 
-#         elif current_room == "kitchen":
-#             jump interact_kitchen
-#         elif current_room == "armory":
-#             jump interact_armory 
-#         elif current_room == "tower":
-#             jump interact_tower
-#         elif current_room == "library":
-#             jump interact_kitchen
-#         elif current_room == "smithy":
-#             jump interact_smithy 
-#         elif current_room == "stables":
-#             jump interact_tower
-#         elif current_room == "cellar":
-#             jump interact_kitchen
-#         elif current_room == "great_hall":
-#             jump interact_great_hall
-#         elif current_room == "throne_room":
-#             jump interact_tower
-#         else: 
-#             "There is nothing to interact with"
-#             jump room_hub
-#     else: 
-#         "There is nothing to interact with"
-#         jump room_hub
-
-
-# label interact_kitchen:
-
-#     if potionColor(pot) != "":
-#         "The pot has [potionColor(pot)]"
-#     else:
-#         "The pot is empty"
-#     if room_investigate["cellar"] == 2:
-#         menu:
-#             "Add Red Potion" if "Red Potion" in inventory:
-#                 $ pot.append("Red Potion")
-#                 $ inventory.remove("Red Potion")
-#                 jump interact_kitchen
-#             "Add Blue Potion" if "Blue Potion" in inventory:
-#                 $ pot.append("Blue Potion")
-#                 $ inventory.remove("Blue Potion")
-#                 jump interact_kitchen
-#             "Add Yellow Potion" if "Yellow Potion" in inventory:
-#                 $ pot.append("Yellow Potion")
-#                 $ inventory.remove("Yellow Potion")
-#                 jump interact_kitchen
-#             "Add Green Potion" if "Green Potion" in inventory:
-#                 $ pot.append("Green Potion")
-#                 $ inventory.remove("Green Potion")
-#                 jump interact_kitchen
-#             "Add Purple Potion" if "Purple Potion" in inventory:
-#                 $ pot.append("Purple Potion")
-#                 $ inventory.remove("Purple Potion")
-#                 jump interact_kitchen
-#             "Add Orange Potion" if "Orange Potion" in inventory:
-#                 $ pot.append("Orange Potion")
-#                 $ inventory.remove("Orange Potion")
-#                 jump interact_kitchen
-#             "Add Black Potion" if "Black Potion" in inventory:
-#                 $ pot.append("Black Potion")
-#                 $ inventory.remove("Black Potion")
-#                 jump interact_kitchen
-#             "Scoop":
-#                 if potionColor(pot) != "":
-#                     "You scooped [potionColor(pot)] liquid"
-#                     $ inventory.append(potionColor(pot)+" Potion")
-#                     $ pot = []
-#                 jump interact_kitchen
-#             "Leave":
-#                 jump room_hub
-#     else: 
-#         menu:
-#             "Leave":
-#                 jump room_hub
-        
-# ## behold the folley of man
-# ## and ("Pointed Mold" in inventory or "Spherical Mold" in inventory or "Cube Mold" in inventory "Red Potion" in inventory or "Blue Potion" in inventory or "Yellow Potion" in inventory or "Green Potion" in inventory or "Orange Potion" in inventory or "Purple Potion" in inventory or "Black Potion" in inventory or "Mysterious Object" in inventory)
-# label interact_smithy:
-
-#     if len(forge)>0:
-#         "The forge has items"
-#     else:
-#         "The forge is empty"
-    
-#     if room_investigate["cellar"] == 2:
-#         menu:
-#             "Add Pointed Mold" if "Pointed Mold" in inventory and "Mysterious Object" in inventory:
-#                 $ forge.append("Pointed Mold")
-#                 $ inventory.remove("Pointed Mold")
-#                 jump interact_smithy
-#             "Add Spherical Mold" if "Spherical Mold" in inventory and "Mysterious Object" in inventory:
-#                 $ forge.append("Spherical Mold")
-#                 $ inventory.remove("Spherical Mold")
-#                 jump interact_smithy
-#             "Add Cube Mold" if "Cube Mold" in inventory and "Mysterious Object" in inventory:
-#                 $ forge.append("Cube Mold")
-#                 $ inventory.remove("Cube Mold")
-#                 jump interact_smithy
-#             "Add Blade" if "Blade" in inventory:
-#                 $ forge.append("Blade")
-#                 $ inventory.remove("Blade")
-#                 jump interact_smithy
-#             "Add Jewel" if "Jewel" in inventory:
-#                 $ forge.append("Jewel")
-#                 $ inventory.remove("Jewel")
-#                 jump interact_smithy
-#             "Add Brick" if "Brick" in inventory:
-#                 $ forge.append("Brick")
-#                 $ inventory.remove("Brick")
-#                 jump interact_smithy
-#             "Add Mysterious Object" if "Mysterious Object" in inventory:
-#                 $ forge.append("Mysterious Object")
-#                 $ inventory.remove("Mysterious Object")
-#                 jump interact_smithy
-#             "Add Red Potion" if "Red Potion" in inventory:
-#                 $ forge.append("Red Potion")
-#                 $ inventory.remove("Red Potion")
-#                 jump interact_smithy
-#             "Add Blue Potion" if "Blue Potion" in inventory:
-#                 $ forge.append("Blue Potion")
-#                 $ inventory.remove("Blue Potion")
-#                 jump interact_smithy
-#             "Add Yellow Potion" if "Yellow Potion" in inventory:
-#                 $ forge.append("Yellow Potion")
-#                 $ inventory.remove("Yellow Potion")
-#                 jump interact_smithy
-#             "Add Green Potion" if "Green Potion" in inventory:
-#                 $ forge.append("Green Potion")
-#                 $ inventory.remove("Green Potion")
-#                 jump interact_smithy
-#             "Add Purple Potion" if "Purple Potion" in inventory:
-#                 $ forge.append("Purple Potion")
-#                 $ inventory.remove("Purple Potion")
-#                 jump interact_smithy
-#             "Add Orange Potion" if "Orange Potion" in inventory:
-#                 $ forge.append("Orange Potion")
-#                 $ inventory.remove("Orange Potion")
-#                 jump interact_smithy
-#             "Add Black Potion" if "Black Potion" in inventory:
-#                 $ forge.append("Black Potion")
-#                 $ inventory.remove("Black Potion")
-#                 jump interact_smithy
-#             "Add Red Blade" if "Red Blade" in inventory:
-#                 $ forge.append("Red Blade")
-#                 $ inventory.remove("Red Blade")
-#                 jump interact_smithy
-#             "Add Blue Blade" if "Blue Blade" in inventory:
-#                 $ forge.append("Blue Blade")
-#                 $ inventory.remove("Blue Blade")
-#                 jump interact_smithy
-#             "Add Yellow Blade" if "Yellow Blade" in inventory:
-#                 $ forge.append("Yellow Blade")
-#                 $ inventory.remove("Yellow Blade")
-#                 jump interact_smithy
-#             "Add Green Blade" if "Green Blade" in inventory:
-#                 $ forge.append("Green Blade")
-#                 $ inventory.remove("Green Blade")
-#                 jump interact_smithy
-#             "Add Purple Blade" if "Purple Blade" in inventory:
-#                 $ forge.append("Purple Blade")
-#                 $ inventory.remove("Purple Blade")
-#                 jump interact_smithy
-#             "Add Orange Blade" if "Orange Blade" in inventory:
-#                 $ forge.append("Orange Blade")
-#                 $ inventory.remove("Orange Blade")
-#                 jump interact_smithy
-#             "Add Black Blade" if "Black Blade" in inventory:
-#                 $ forge.append("Black Blade")
-#                 $ inventory.remove("Black Blade")
-#                 jump interact_smithy
-#             "Create":
-#                 if anvil(forge) != "":
-#                     "You created placeholder"
-#                     $ inventory.append(anvil(forge))
-#                     $ forge = []
-#                 jump interact_smithy
-#             "Leave":
-#                 jump room_hub
-#     else: 
-#         menu:
-#             "Leave":
-#                 jump room_hub
-
-
-# label interact_gatehouse:
-#     "You try Cooking with your environment."
-#     jump room_hub
 
 
 label room_hub:
-    scene expression "bg " + current_room
-    "You are in [current_room.capitalize()]."
+    scene expression current_room at center:
+        zoom 2.0  
+        xalign 0.5
+        yalign 0.5
+    "You are in [formalize_scene_name(current_room)]."
+    if room_state["entrance"] == 0 and current_room == "passage":
+        "Suddenly the Entrance Slams Shut!"
+        $ room_state["entrance"] = 1
+    elif room_state["entrance"] == 2 and current_room == "passage":
+        $ room_state["entrance"] = 3
+        "The Entrance is open!"
     menu:
         "Navigate":
             jump expression current_room 
         "Inventory":
-            jump inventory_menu
+            call inventory_menu
         "Investigate":
             jump investigate
         # "Interact":
@@ -714,7 +541,6 @@ label room_hub:
 
 
 label entrance:
-    $ current_investigate = "You investigating."
     menu:
         "Go to Passage":
             $ current_room = "passage"
@@ -724,15 +550,8 @@ label entrance:
 
 
 label passage:
-    if room_state["entrance"] == 0:
-        "Suddenly the Entrance Slams Shut!"
-        $ room_state["entrance"] = 1
-    elif room_state["entrance"] == 2:
-        $ room_state["entrance"] = 3
-        "The Entrance is open!"
-    else: 
+    if room_state["entrance"] == 3:
         "Freedom is nigh"
-
     menu:
         "Go to courtyard":
             $ current_room = "courtyard"
@@ -742,7 +561,7 @@ label passage:
                 "The entrance is barred!"
                 jump room_hub
             else:
-                $ current_room = "entrance"
+                $ current_room = "end"
                 jump room_hub
         "Stay Here":
             jump room_hub
@@ -796,7 +615,6 @@ label cellar:
 
 
 label gatehouse:
-    $ current_investigate = "You investigating."
     menu:
         "Go to couryard":
             $ current_room = "courtyard"
@@ -814,7 +632,6 @@ label gatehouse:
             jump room_hub
 
 label kitchen:
-    $ current_investigate = "You investigating."
     menu:
         "Go to gatehouse":
             $ current_room = "gatehouse"
@@ -823,7 +640,6 @@ label kitchen:
             jump room_hub
 
 label armory:
-    $ current_investigate = "You investigating."
     menu:
         "Go to gatehouse":
             $ current_room = "gatehouse"
@@ -832,7 +648,6 @@ label armory:
             jump room_hub
 
 label tower:
-    $ current_investigate = "You investigating."
     menu:
         "Go to gatehouse":
             $ current_room = "gatehouse"
@@ -841,7 +656,19 @@ label tower:
             jump room_hub
 
 label poem:
-    "display the poem"
+    "There once was a Fae\nIt hid amongst Hay\nHoarding round Jewels of Green with Envy"
+    "Then there came along\na knight o so strong\nwith a wrought iron sword; very heavy"
+    "From bones came a form\ncolors changing, warm\npressed to shapes against any enemy"
+    "Castle's now cursed\nSon seen dead, perversed\nEven Fae seek vengeance quite readily"
+    jump room_hub
+
+label book:
+    "Skimming through the book, most of it seems to be manuscripts of things you barely understand."
+    "One page stands out, however."
+    "Sloppily scribbled it reads: "
+    "\"With great heat, the substance can be molded into anything! More than that, when treated with mystic energy, they seem to change the material's composition fundamentally!\""
+    "\"I created some molds for testing later, but for now I am called away for more of the Knight King's non-sense.\""
+    "\"Perhaps stowing them away in the cellar will assuage his paranoia, I don't want to end up like the butler.\""
     jump room_hub
 
 label great_hall:
@@ -880,10 +707,147 @@ label throne_room:
         
 
 label end:
-    scene black
-    "Thanks for playing!"
+    menu:
+        "Fight":
+            jump fight
+        "Plea":
+            jump plea
+
+
+label fight:
+    if player_health <= 0:
+        "You fall to the ground, defeated."
+        jump death
+    elif enemy_health <= 0:
+        "You did it!"
+        jump fight_win
+
+    "Your Health: [player_health]"
+
+    $ import random
+    $ enemy_move = renpy.random.choice(["attack", "parry", "grab"])
+
+    if enemy_move == "attack":
+        "The create tenses, ready to strike."
+    elif enemy_move == "parry":
+        "The creature watches you closely."
+    elif enemy_move == "grab":
+        "The creature lowers its stance as if ready to lunge at you."
+    "What do you do?"
+    menu:
+        "Attack":
+            $ player_move = "attack"
+        "Parry":
+            $ player_move = "parry"
+        "Grab":
+            $ player_move = "grab"
+
+    if player_move == enemy_move:
+        "You both clash, neither winning out."
+    elif (player_move == "attack" and enemy_move == "grab") or (player_move == "parry" and enemy_move == "attack") or (player_move == "grab" and enemy_move == "parry"):
+        if "Black Sword" in inventory:
+            if player_move == "attack": 
+                $ enemy_health -= 25
+            elif player_move == "parry":
+                $ enemy_health -= 10
+            elif player_move == "grab":
+                $ enemy_health -= 10
+        else:
+            "Your attack barely seems to land and are damaged from the recoil"
+            $ enemy_health -= 1
+            $ player_health -= 10
+        
+    else:
+        "Your move is countered!"
+        $ player_health -= 25
+
+    jump fight
+
+label plea:
+    menu:
+        "Say: \"Can I leave?\"":
+            jump death
+        "Prostrate":
+            if "Green Jewel" in inventory:
+                jump plea_2
+            else:
+                jump death
+
+label plea_2:
+    "The creature inspects you"
+    menu:
+        "Say: \"May I pass?\"":
+            jump death
+        "Offer Green Jewel" if "Green Jewel" in inventory:
+            jump plea_3
+
+label plea_3:
+    "The creature sobs"
+    menu:
+        "Say: \"Is this enough?\"":
+            jump death
+        "Say: \"This will never be enough\"":
+            jump plea_4
+        "Sprint Away":
+            jump death
+
+label plea_4:
+    "The creature regards you"
+    menu:
+        "Say: \"You're just going to kill me anyway\"":
+            jump death
+        "Say: \"What was done to you was a travesty\"":
+            jump plea_5
+        "Say: \"What was done to your child was a travesty\"":
+            jump plea_6
+        "Sprint Away":
+            jump death
+
+label plea_5:
+    "The creature becomes flush with rage"
+    menu:
+        "Say: \"This is what you hoard right?\"":
+            jump death
+        "Say: \"But I am not the one who did this\"":
+            jump plea_6
+        "Sprint Away":
+            jump death
+
+label plea_6:
+    "The creature becomes composed"
+    menu:
+        "Say: \"Take this as something to remember him by.\"":
+            "The creature bows its head"
+            jump plea_7
+        "Walk Away":
+            jump death
+label plea_7:
+    "What do you do?"
+    menu:
+        "Bow in return":
+            "The creature bows its head"
+            jump plea_win
+        "Reach out and touch it":
+            "The creature is perplexed by your audacity, shoving you away"
+            jump plea_win
+        "Walk Away":
+            jump plea_win
+        "Attack it!":
+            jump death
+        
+
+
+label fight_win:
+    "You defeated the creature and successfully escaped"
+    "Reading the poem taught you how to slay its kind, though maybe not what happned in the castle."
+    "While showered with prestige once returning home, you can't shake a sense of unease."
     return
 
+label plea_win:
+    "You are granted leave, a boon for having more honor than those who once inhabited this castle"
+    return
 
-
+label death:
+    "You do not make it, falling to a fate best undescribed."
+    return
 
