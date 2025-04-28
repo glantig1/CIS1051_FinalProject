@@ -541,20 +541,17 @@ screen inventory_screen():
     tag menu
     modal True
     window:
-        background Solid("#000000C0")  
+        background Solid("#000000d0")  
         xalign 0.5 yalign 0.5 xsize 600 ysize 600
         has vbox:
             text "Inventory:"
             viewport:
-                yinitial 0.0
-                scrollbars "vertical"
-                mousewheel True
-                draggable True
                 vbox:
-                    spacing 5
+                    spacing 10
                     for item in inventory:
                         text item
             textbutton "Close" action Return()
+            
 
 ## About screen ################################################################
 ##

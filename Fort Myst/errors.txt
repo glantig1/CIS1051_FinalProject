@@ -2,9 +2,9 @@
 errors listed below, and try again.
 
 
-File "game/script.rpy", line 88: invalid syntax
-                "end": "End"
-                      ^
+File "game/screens.rpy", line 558: 'background' is not a keyword argument or valid child of the vbox statement.
+    background Solid("#000000d0")  
+              ^
 
 Ren'Py Version: Ren'Py 8.3.7.25031702
-Sun Apr 27 00:56:17 2025
+Mon Apr 28 00:13:05 2025
