@@ -572,9 +572,6 @@ label passage:
 
 label courtyard:
     menu:
-        "Go to Passage":
-            $ current_room = "passage"
-            jump room_hub
         "Go to Great Hall":
             $ current_room = "great_hall"
             jump room_hub
@@ -586,6 +583,9 @@ label courtyard:
             jump room_hub
         "Go to Stables":
             $ current_room = "stables"
+            jump room_hub
+        "Go to Passage":
+            $ current_room = "passage"
             jump room_hub
         "Stay Here":
             jump room_hub
@@ -856,18 +856,18 @@ label plea_7:
             jump death
         
 
-
+## https://lemmasoft.renai.us/forums/viewtopic.php?t=45551
 label fight_win:
     "You defeated the creature and successfully escaped"
     "Reading the poem taught you how to slay its kind, though maybe not what happned in the castle."
     "While showered with prestige once returning home, you can't shake a sense of unease."
-    return
+    $ MainMenu(confirm=False)()
 
 label plea_win:
     "You are granted leave, a boon for having more honor than those who once inhabited this castle"
-    return
+    $ MainMenu(confirm=False)()
 
 label death:
     "You do not make it, falling to a fate best undescribed."
-    return
+    $ MainMenu(confirm=False)()
 
