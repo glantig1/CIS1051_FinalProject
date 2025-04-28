@@ -154,6 +154,22 @@ init python:
             return "Purple Sword"
         elif "Sword Hilt" in forge and "Black Blade" in forge:
             return "Black Sword"
+        elif "Sword" in forge and "Red Potion" in forge:
+            return "Red Sword"
+        elif "Blade" in forge and "Blue Potion" in forge:
+            return "Blue Sword"
+        elif "Sword" in forge and "Yellow Potion" in forge:
+            return "Yellow Sword"
+        elif "Sword" in forge and "Green Potion" in forge:
+            return "Green Sword"
+        elif "Sword" in forge and "Orange Potion" in forge:
+            return "Orange Sword"
+        elif "Sword" in forge and "Purple Potion" in forge:
+            return "Purple Sword"
+        elif "Sword" in forge and "Black Potion" in forge:
+            return "Black Sword"
+        elif "Blade" in forge and "Sword Hilt" in forge:
+            return "Sword"
         else: 
             return ""
 
@@ -420,6 +436,10 @@ label investigate:
                     $ forge.append("Sword Hilt")
                     $ inventory.remove("Sword Hilt")
                     jump investigate
+                "Add Sword" if "Sword" in inventory and len(forge)<2:
+                    $ forge.append("Sword")
+                    $ inventory.remove("Sword")
+                    jump investigate
                 "Create" if len(forge) == 2:
                     if anvil(forge) != "":
                         "You created [anvil(forge)]"
@@ -488,7 +508,7 @@ label investigate:
                 "No": 
                     "The remains undisturbed"
         else:
-            "The rusted sets armour seem to whistle in chorus, but alas its just the wind"
+            "The there is nothing here but the sound of wind"
     elif current_room == "throne_room":
         if room_investigate[current_room] == 1:
             $ room_investigate[current_room] = 2
